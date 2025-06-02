@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.tanvirmhamud</groupId>
     <artifactId>cricket_secure_api_module</artifactId>
-    <version>5.9</version>
+    <version>6.0</version>
     <packaging>pom</packaging>
     <description>cricket api library</description>
 </project>

@@ -3,6 +3,10 @@ import android.content.Context
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import java.io.ByteArrayOutputStream
+import java.io.InputStream
+import java.net.HttpURLConnection
+import java.net.URL
 
 class NativeLib(context: Context) {
     private var token : String? = null;
@@ -27,6 +31,7 @@ class NativeLib(context: Context) {
     private external fun seriesDetails() : String
     private external fun matchTable() : String
     private external fun somedaymatch() : String
+    private external fun imageurl() : String
 
 
     suspend fun getliveMatch(): String? {
@@ -118,6 +123,29 @@ class NativeLib(context: Context) {
             dara
         }
         return fixture_match.await();
+    }
+
+
+    fun getBannerImageBytes(slug: String): ByteArray? {
+        return try {
+            val url = URL("${imageurl()}i2/fh/xcr-${slug}.jpg")
+            val connection = url.openConnection() as HttpURLConnection
+            connection.doInput = true
+            connection.connect()
+
+            val input: InputStream = connection.inputStream
+            val buffer = ByteArrayOutputStream()
+            val data = ByteArray(1024)
+            var n: Int
+
+            while (input.read(data).also { n = it } != -1) {
+                buffer.write(data, 0, n)
+            }
+
+            buffer.toByteArray()
+        } catch (e: Exception) {
+            null
+        }
     }
 
 

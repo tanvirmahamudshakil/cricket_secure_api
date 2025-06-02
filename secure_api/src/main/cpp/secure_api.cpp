@@ -77,4 +77,10 @@ Java_com_example_secure_1api_NativeLib_somedaymatch(JNIEnv *env, jobject) {
 }
 
 
+extern "C" JNIEXPORT jstring JNICALL
+Java_com_example_secure_1api_NativeLib_imageurl(JNIEnv *env, jobject) {
+    return env->NewStringUTF( "https://static.livescore.com/");
+}
+
+
 
