@@ -3,6 +3,9 @@ import android.content.Context
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okio.IOException
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.net.HttpURLConnection
@@ -125,28 +128,49 @@ class NativeLib(context: Context) {
         return fixture_match.await();
     }
 
+    fun getBannerImageBytes(slug: String, callback: (ByteArray?) -> Unit) {
+        val client = OkHttpClient()
 
-    fun getBannerImageBytes(slug: String): ByteArray? {
-        return try {
-            val url = URL("${imageurl()}i2/fh/xcr-${slug}.jpg")
-            val connection = url.openConnection() as HttpURLConnection
-            connection.doInput = true
-            connection.connect()
+        Thread {
+            try {
+                val url = "${imageurl()}i2/fh/xcr-${slug}.jpg"
+                val request = Request.Builder().url(url).build()
+                val response = client.newCall(request).execute()
 
-            val input: InputStream = connection.inputStream
-            val buffer = ByteArrayOutputStream()
-            val data = ByteArray(1024)
-            var n: Int
-
-            while (input.read(data).also { n = it } != -1) {
-                buffer.write(data, 0, n)
+                if (response.isSuccessful) {
+                    val bytes = response.body?.bytes()
+                    callback(bytes)
+                } else {
+                    callback(null)
+                }
+            } catch (e: IOException) {
+                callback(null)
             }
-
-            buffer.toByteArray()
-        } catch (e: Exception) {
-            null
-        }
+        }.start()
     }
+
+
+//    fun getBannerImageBytes(slug: String): ByteArray? {
+//        return try {
+//            val url = URL("${imageurl()}i2/fh/xcr-${slug}.jpg")
+//            val connection = url.openConnection() as HttpURLConnection
+//            connection.doInput = true
+//            connection.connect()
+//
+//            val input: InputStream = connection.inputStream
+//            val buffer = ByteArrayOutputStream()
+//            val data = ByteArray(1024)
+//            var n: Int
+//
+//            while (input.read(data).also { n = it } != -1) {
+//                buffer.write(data, 0, n)
+//            }
+//
+//            buffer.toByteArray()
+//        } catch (e: Exception) {
+//            null
+//        }
+//    }
 
 
 
