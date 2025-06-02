@@ -128,25 +128,12 @@ class NativeLib(context: Context) {
         return fixture_match.await();
     }
 
-    fun getBannerImageBytes(slug: String, callback: (ByteArray?) -> Unit) {
-        val client = OkHttpClient()
-
-        Thread {
-            try {
-                val url = "${imageurl()}i2/fh/xcr-${slug}.jpg"
-                val request = Request.Builder().url(url).build()
-                val response = client.newCall(request).execute()
-
-                if (response.isSuccessful) {
-                    val bytes = response.body?.bytes()
-                    callback(bytes)
-                } else {
-                    callback(null)
-                }
-            } catch (e: IOException) {
-                callback(null)
-            }
-        }.start()
+    suspend fun getBannerImageBytes(slug: String) : ByteArray? {
+        val fixture_match = CoroutineScope(Dispatchers.IO).async {
+            val dara =  HttpHelp().getImageData("${imageurl()}i2/fh/xcr-${slug}.jpg",token!!)
+            dara
+        }
+        return fixture_match.await();
     }
 
 

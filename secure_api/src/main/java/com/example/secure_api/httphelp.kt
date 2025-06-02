@@ -29,6 +29,24 @@ class HttpHelp {
         return result
     }
 
+    fun getImageData(sUrl: String, token: String): ByteArray? {
+
+        var result: ByteArray? = null
+        try {
+            // Create URL
+            val url = URL(sUrl)
+            // Build request
+            val request = Request.Builder().header("ab", token).url(url).build()
+            // Execute request
+            val response = client.newCall(request).execute()
+            result = response.body?.bytes()
+        }
+        catch(err:Error) {
+            print("Error when executing get request: "+err.localizedMessage)
+        }
+        return result
+    }
+
     fun postRequest(sUrl: String, token: String, matchid : Int, home : Int, away : Int, homename : String, awayname : String, draw : Int): String? {
         var result: String? = null
         try {
