@@ -1,0 +1,131 @@
+package com.example.secure_api
+import android.content.Context
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+
+class NativeLib(context: Context) {
+    private var token : String? = null;
+
+
+    init {
+//        System.loadLibrary("secure_api")
+        token = context.packageName
+    }
+    external fun stringFromJNI(): String
+    private external fun getdomain(): String
+
+
+    private external fun liveMatch(): String
+    private external fun upCommingMatch() : String
+    private external fun matchInfo() : String
+    private external fun matchDetails() : String
+    private external fun matchIning() : String
+    private external fun matchLineUp() : String
+    private external fun countryList() : String
+    private external fun seriesList() : String
+    private external fun seriesDetails() : String
+    private external fun matchTable() : String
+    private external fun somedaymatch() : String
+
+
+    suspend fun getliveMatch(): String? {
+        val match = CoroutineScope(Dispatchers.IO).async {
+            var dara =  HttpHelp().getRequest("${getdomain()}${liveMatch()}", token!!)
+            dara
+        }
+        return match.await();
+    }
+
+    suspend fun getupCommingMatch(date: String = "20221005"): String? {
+        val fixture_match = CoroutineScope(Dispatchers.IO).async {
+            val dara =  HttpHelp().getRequest("${getdomain()}${upCommingMatch()}/${date}",token!!)
+            dara
+        }
+        return fixture_match.await();
+    }
+
+    suspend fun getmatchInfo(matchid: String = "20221005"): String? {
+        val fixture_match = CoroutineScope(Dispatchers.IO).async {
+            val dara =  HttpHelp().getRequest("${getdomain()}${matchInfo()}/${matchid}",token!!)
+            dara
+        }
+        return fixture_match.await();
+    }
+
+    suspend fun getmatchDetails(matchid: String = "20221005"): String? {
+        val fixture_match = CoroutineScope(Dispatchers.IO).async {
+            val dara =  HttpHelp().getRequest("${getdomain()}${matchDetails()}/${matchid}",token!!)
+            dara
+        }
+        return fixture_match.await();
+    }
+
+    suspend fun getmatchIning(matchid: String = "20221005"): String? {
+        val fixture_match = CoroutineScope(Dispatchers.IO).async {
+            val dara =  HttpHelp().getRequest("${getdomain()}${matchIning()}/${matchid}",token!!)
+            dara
+        }
+        return fixture_match.await();
+    }
+
+    suspend fun getmatchLineUp(matchid: String = "20221005"): String? {
+        val fixture_match = CoroutineScope(Dispatchers.IO).async {
+            val dara =  HttpHelp().getRequest("${getdomain()}${matchLineUp()}/${matchid}",token!!)
+            dara
+        }
+        return fixture_match.await();
+    }
+
+
+    suspend fun getcountryList(): String? {
+        val fixture_match = CoroutineScope(Dispatchers.IO).async {
+            val dara =  HttpHelp().getRequest("${getdomain()}${countryList()}",token!!)
+            dara
+        }
+        return fixture_match.await();
+    }
+
+
+    suspend fun getseriesList(country : String): String? {
+        val fixture_match = CoroutineScope(Dispatchers.IO).async {
+            val dara =  HttpHelp().getRequest("${getdomain()}${seriesList()}/${country}",token!!)
+            dara
+        }
+        return fixture_match.await();
+    }
+
+
+    suspend fun getseriesDetails(country : String, seriesSlug: String): String? {
+        val fixture_match = CoroutineScope(Dispatchers.IO).async {
+            val dara =  HttpHelp().getRequest("${getdomain()}${seriesDetails()}/$country/$seriesSlug",token!!)
+            dara
+        }
+        return fixture_match.await();
+    }
+
+    suspend fun GetLeagueTable(leaguename : String, leagueslug: String): String? {
+        val fixture_match = CoroutineScope(Dispatchers.IO).async {
+            val dara =  HttpHelp().getRequest("${getdomain()}${matchTable()}/$leaguename/$leagueslug",token!!)
+            dara
+        }
+        return fixture_match.await();
+    }
+
+    suspend fun getsomeDayMatch(): String? {
+        val fixture_match = CoroutineScope(Dispatchers.IO).async {
+            val dara =  HttpHelp().getRequest("${getdomain()}${somedaymatch()}",token!!)
+            dara
+        }
+        return fixture_match.await();
+    }
+
+
+
+    companion object {
+        // Used to load the 'secure_api' library on application startup.
+        init {
+            System.loadLibrary("secure_api")
+        }
+    }
+}
